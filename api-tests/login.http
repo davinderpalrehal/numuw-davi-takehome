@@ -1,0 +1,11 @@
+### POST request to login
+POST /api/token/ HTTP/1.1
+HOST: localhost:8000
+Content-Type: application/json
+
+{
+  "username": "davinderpal",
+  "password": "webslinger"
+}
+
+###

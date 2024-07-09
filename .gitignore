@@ -28,3 +28,5 @@ psd
 thumb
 sketch
 
+.idea
+*.iml
