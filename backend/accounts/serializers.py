@@ -4,7 +4,7 @@ from .models import NumuwUser, Therapist, Patient, Parent
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = NumuwUser
-        fields = ['username', 'password', 'user_type']
+        fields = ['username', 'password', 'user_type', 'first_name', 'last_name', 'email']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):

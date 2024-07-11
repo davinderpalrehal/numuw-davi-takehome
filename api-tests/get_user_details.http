@@ -1,0 +1,20 @@
+### POST request to login
+POST /api/token/ HTTP/1.1
+HOST: localhost:8000
+Content-Type: application/json
+
+{
+  "username": "davinderpal",
+  "password": "webslinger"
+}
+
+> {%
+   client.global.set("accessToken", response.body.access)
+ %}
+
+###
+GET /api/user_details/ HTTP/1.1
+HOST: localhost:8000
+Authorization: Bearer {{ accessToken }}
+
+###
