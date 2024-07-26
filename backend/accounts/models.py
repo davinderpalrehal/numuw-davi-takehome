@@ -9,9 +9,6 @@ class NumuwUser(AbstractUser):
     )
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
 
-class Therapist(models.Model):
-    user = models.OneToOneField(NumuwUser, on_delete=models.CASCADE)
-
 
 class Patient(models.Model):
     user = models.OneToOneField(NumuwUser, on_delete=models.CASCADE)
@@ -19,3 +16,9 @@ class Patient(models.Model):
 
 class Parent(models.Model):
     user = models.OneToOneField(NumuwUser, on_delete=models.CASCADE)
+    patients = models.ManyToManyField(Patient,  related_name='parents')
+
+
+class Therapist(models.Model):
+    user = models.OneToOneField(NumuwUser, on_delete=models.CASCADE)
+    patients = models.ManyToManyField(Patient, related_name='therapists')

@@ -7,17 +7,21 @@ import Parent from "../views/Parent.tsx";
 function Dashboard() {
   const [isTherapist, setTherapist] = React.useState(true);
   const user = useSelector((state: RootState) => state.user);
+
   return (
     <>
       <header className="top-bar">
         <img className="top-bar__logo" src={""} alt="Numuw logo" />
-        <div className="top-bar__user-section">
+
+        <div
+          className="top-bar__user-section"
+          onClick={() => setTherapist(() => false)}
+        >
           <img src="" alt="User avatar" />
         </div>
       </header>
       <h1>{JSON.stringify(user)}</h1>
       {isTherapist ? <Therapist /> : <Parent />}
-
     </>
   );
 }

@@ -10,8 +10,8 @@ import {
   ButtonGroup,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {setToken} from "../state/user/userSlice.ts";
+import { useDispatch } from "react-redux";
+import { loginUser, setToken } from "../state/user/userSlice.ts";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -24,31 +24,11 @@ function Login() {
     event.preventDefault();
     console.log("handling login");
     try {
-      const response = await fetch("http://localhost:8000/api/token/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("token", data.access);
-        console.log({
-          msg: "Login successfully",
-          data,
-        });
-        dispatch(setToken(data.access));
-        navigate('/dashboard')
-      } else {
-        setError("Login failed, You don't have an account!");
-      }
+      await dispatch(loginUser(username, password));
+      setToken("token");
+      navigate("/dashboard");
     } catch (error) {
-      setError("Login error ->", JSON.stringify(error));
+      setError("Login error ->" + JSON.stringify(error));
     }
   };
 
