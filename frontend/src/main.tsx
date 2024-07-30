@@ -1,16 +1,20 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { ChakraProvider } from "@chakra-ui/react";
-import App from "./App.tsx";
-import { Provider } from "react-redux";
-import { store } from "./state/store.ts";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { store } from './state/store.ts';
+import App from './App.tsx';
+import './index.css';
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <ChakraProvider>
+const rootElement = document.getElementById('root');
+
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
       <Provider store={store}>
         <App />
       </Provider>
-    </ChakraProvider>
-  </React.StrictMode>,
-);
+    </React.StrictMode>,
+  );
+} else {
+  console.error('Root element not found');
+}
