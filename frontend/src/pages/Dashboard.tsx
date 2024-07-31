@@ -1,27 +1,28 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../state/store.ts";
-import Therapist from "../views/Therapist.tsx";
-import Parent from "../views/Parent.tsx";
+import React, { useEffect, useState } from 'react';
+import TherapistView from '../components/TherapistView.tsx';
 
 function Dashboard() {
-  const [isTherapist, setTherapist] = React.useState(true);
-  const user = useSelector((state: RootState) => state.user);
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    setUser({
+      id: 1,
+      username: 'johndoe',
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'johndoe@me.com',
+      user_type: 'therapist',
+      picture: 'image-url',
+    });
+  }, []);
 
   return (
     <>
-      <header className="top-bar">
-        <img className="top-bar__logo" src={""} alt="Numuw logo" />
-
-        <div
-          className="top-bar__user-section"
-          onClick={() => setTherapist(() => false)}
-        >
-          <img src="" alt="User avatar" />
-        </div>
-      </header>
-      <h1>{JSON.stringify(user)}</h1>
-      {isTherapist ? <Therapist /> : <Parent />}
+      {user.user_type === 'therapist' ? (
+        <TherapistView user={user} />
+      ) : (
+        'Patient view'
+      )}
     </>
   );
 }

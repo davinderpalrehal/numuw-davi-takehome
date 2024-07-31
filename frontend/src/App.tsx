@@ -3,6 +3,7 @@ import LoginModal from './components/LoginModal.tsx';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home.tsx';
 import ProfileMenu from './components/ProfileMenu.tsx';
+import Dashboard from './pages/Dashboard.tsx';
 
 function BaseLayout({ children }) {
   const { showLoginModal } = useLoginModal();
@@ -33,6 +34,9 @@ function App() {
         <BaseLayout>
           <Routes>
             <Route index element={<Home />} />
+            {/* TODO: This should be a protected route*/}
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/chat/:patientId" element={<Home />} />
           </Routes>
         </BaseLayout>
       </BrowserRouter>
