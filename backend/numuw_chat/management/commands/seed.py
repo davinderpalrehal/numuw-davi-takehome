@@ -8,6 +8,8 @@ class Command(BaseCommand):
     help = 'Seeds the database with initial data'
 
     def handle(self, *args, **options):
+        # TODO: Add about 4 therapists and 10 patients and 8 parents
+        # TODO: Add a few conversations and messages
         if User.objects.count() > 0:
             return
         User.objects.create_superuser('admin', 'admin@localhost', 'admin123')

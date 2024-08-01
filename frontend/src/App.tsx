@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home.tsx';
 import ProfileMenu from './components/ProfileMenu.tsx';
 import Dashboard from './pages/Dashboard.tsx';
+import Chat from './pages/Chat.tsx';
 
 function BaseLayout({ children }) {
   const { showLoginModal } = useLoginModal();
@@ -19,7 +20,7 @@ function BaseLayout({ children }) {
       <main className="flex-grow py-5">
         <div className="container flex-grow mx-auto">{children}</div>
       </main>
-      <footer className="h-48 bg-slate-400">
+      <footer className="h-32 bg-slate-400">
         <div className="container mx-auto pt-5">This is the footer</div>
       </footer>
       {showLoginModal && <LoginModal />}
@@ -36,7 +37,7 @@ function App() {
             <Route index element={<Home />} />
             {/* TODO: This should be a protected route*/}
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/chat/:patientId" element={<Home />} />
+            <Route path="/chat/:therapistId/:patientId" element={<Chat />} />
           </Routes>
         </BaseLayout>
       </BrowserRouter>

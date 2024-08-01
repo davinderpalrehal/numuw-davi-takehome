@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Typography from './Typography.tsx';
 import Button from './Button.tsx';
+import { useNavigate } from 'react-router-dom';
 
 function TherapistView({ user }) {
   const [patients, setPatients] = useState([
@@ -43,6 +44,7 @@ function TherapistView({ user }) {
   ]);
 
   const [onlineStatus, setOnlineStatus] = useState('Online');
+  const navigate = useNavigate();
 
   return (
     <div className="flex gap-4">
@@ -80,7 +82,7 @@ function TherapistView({ user }) {
             </Typography>
             <Typography className="col-span-3"> {patient.email}</Typography>
             <Button
-              onClick={() => console.log('Chat with patient')}
+              onClick={() => navigate(`/chat/${user.id}/${patient.id}`)}
               className="col-span-3"
             >
               Chat with Parent

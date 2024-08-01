@@ -18,6 +18,14 @@ function Button({ children, className = '', variant = 'primary', ...props }) {
         'hover:to-red-700',
         'text-white',
       );
+    } else if (variant === 'outline') {
+      classesToBeApplied.push(
+        'border-2',
+        'border-purple-500',
+        'text-purple-500',
+        'hover:bg-purple-500',
+        'hover:text-white',
+      );
     } else {
       classesToBeApplied.push(
         'from-purple-600',
