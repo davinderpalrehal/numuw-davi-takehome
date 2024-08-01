@@ -1,6 +1,10 @@
-from accounts.models import Therapist, Patient, Parent
+import random
+
+from accounts.models import Therapist, Patient, Parent, NumuwUser
 from django.contrib.auth import get_user_model
 from django.core.management import BaseCommand
+
+from numuw_chat.models import Conversation, Message
 
 User = get_user_model()
 
@@ -8,24 +12,139 @@ class Command(BaseCommand):
     help = 'Seeds the database with initial data'
 
     def handle(self, *args, **options):
-        # TODO: Add about 4 therapists and 10 patients and 8 parents
-        # TODO: Add a few conversations and messages
         if User.objects.count() > 0:
             return
-        User.objects.create_superuser('admin', 'admin@localhost', 'admin123')
-        therapist_user = User.objects.create_user(username='therapist', password='therapist123', user_type='therapist')
-        Therapist.objects.create(user=therapist_user)
-        therapist_user.save()
 
-        patient_user = User.objects.create_user(username='patient', password='patient123', user_type='patient')
-        patient_user.therapist = therapist_user
-        Patient.objects.create(user=patient_user)
-        patient_user.save()
+        # Adding admin user
+        User.objects.create_superuser(
+            username='admin',
+            email='admin@localhost',
+            password='admin123',
+            user_type='therapist',
+            first_name='Admin',
+            last_name='User',
+            can_login=True
+        )
 
-        parent_user = User.objects.create_user(username='parent', password='parent123', user_type='parent')
-        parent_user.patient = patient_user
-        Parent.objects.create(user=parent_user)
+        # Adding therapists
+        therapist_users = []
+        therapist_names = [
+            ('Aarav', 'Sharma'),
+            ('Omar', 'Hussein'),
+            ('Aisha', 'Khalid'),
+            ('Sneha', 'Iyer'),
+        ]
+        for f_name, l_name in therapist_names:
+            curr_user = NumuwUser.objects.create_user(
+                username=f'{f_name.lower()}{l_name.lower()}',
+                email=f'{f_name.lower()}{l_name.lower()}@localhost',
+                password='therapist123',
+                user_type='therapist',
+                first_name=f_name,
+                last_name=l_name,
+                can_login=True
+            )
+            curr_user.save()
+            Therapist.objects.create(user=curr_user)
+            therapist_users.append(curr_user)
 
-        parent_user.save()
+        # Adding patients
+        patient_users = []
+        patient_names = [
+            ('Ananya', 'Gupta'),
+            ('Rohan', 'Mehta'),
+            ('Ahmed', 'Al-Farsi'),
+            ('Fatima', 'Zayed'),
+            ('Priya', 'Kapoor'),
+            ('Vikram', 'Singh'),
+            ('Hassan', 'Ali'),
+            ('Layla', 'Saeed'),
+            ('Aishwarya', 'Rao'),
+            ('Yusuf', 'Rahman'),
+        ]
+        for f_name, l_name in patient_names:
+            curr_user = NumuwUser.objects.create_user(
+                username=f'{f_name.lower()}{l_name.lower()}',
+                email=f'{f_name.lower()}{l_name.lower()}@localhost',
+                password='patient123',
+                user_type='patient',
+                first_name=f_name,
+                last_name=l_name,
+                can_login=False
+            )
+            curr_user.save()
+            Patient.objects.create(user=curr_user)
+            patient_users.append(curr_user)
+
+        # Adding parents
+        parent_users = []
+        parent_names = [
+            ('Karan', 'Patel'),
+            ('Arjun', 'Nair'),
+            ('Meera', 'Desai'),
+            ('Raj', 'Verma'),
+            ('Zara', 'Ahmed'),
+            ('Ali', 'Hassan'),
+            ('Noor', 'Jamil'),
+            ('Ibrahim', 'Mustafa'),
+        ]
+        for f_name, l_name in parent_names:
+            curr_user = NumuwUser.objects.create_user(
+                username=f'{f_name.lower()}{l_name.lower()}',
+                email=f'{f_name.lower()}{l_name.lower()}@localhost',
+                password='patient123',
+                user_type='patient',
+                first_name=f_name,
+                last_name=l_name,
+                can_login=True,
+            )
+            curr_user.save()
+            Parent.objects.create(user=curr_user)
+            parent_users.append(curr_user)
+
+        # Assign patients to parents
+        num_therapists = len(therapist_users)
+        for i, patient_user in enumerate(patient_users):
+            therapist_user = therapist_users[i % num_therapists]
+            therapist = Therapist.objects.get(user=therapist_user)
+            patient = Patient.objects.get(user=patient_user)
+            therapist.patients.add(patient)
+            therapist.save()
+
+        for patient_user in patient_users[num_therapists:]:
+            therapist_user = random.choice(therapist_users)
+            therapist = Therapist.objects.get(user=therapist_user)
+            patient = Patient.objects.get(user=patient_user)
+            therapist.patients.add(patient)
+            therapist.save()
+
+        # Adding conversations and messages
+        for parent in parent_users:
+            therapist = random.choice(therapist_users)
+            conversation = Conversation.objects.create(
+                therapist=therapist,
+                parent=parent,
+                status='open'
+            )
+            messages = [
+                {
+                    'sender': therapist,
+                    'content': 'Hello, how can I help you today?',
+                },
+                {
+                    'sender': parent,
+                    'content': 'I have some concerns about my child.',
+                },
+                {
+                    'sender': therapist,
+                    'content': 'Can you please provide more details?',
+                },
+            ]
+            for message in messages:
+                Message.objects.create(
+                    conversation=conversation,
+                    sender=message['sender'],
+                    content=message['content']
+                )
 
         self.stdout.write(self.style.SUCCESS('Successfully seeded the database'))

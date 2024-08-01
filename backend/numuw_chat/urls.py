@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from accounts.models import NumuwUser
-from .views import ConversationViewSet, MessageViewSet
+from .views import ConversationViewSet, MessageViewSet, ChatHistoryView
 from accounts.views import UserDetailView
 
 router = routers.DefaultRouter()
@@ -36,5 +36,6 @@ urlpatterns = [
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('admin/', admin.site.urls),
+    path('api/chat-history/', ChatHistoryView.as_view(), name='chat-history'),
     path('api/', include(router.urls)),
 ]
