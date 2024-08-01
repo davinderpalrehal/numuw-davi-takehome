@@ -1,5 +1,5 @@
 from django.contrib import admin
-from accounts.models import Therapist, Parent, Patient, NumuwUser
+from accounts.models import Therapist, Parent, Patient, NumuwUser, UserProfile
 from numuw_chat.models import Conversation, Message
 
 class NumuwUserAdmin(admin.ModelAdmin):
@@ -30,9 +30,14 @@ class PatientAdmin(admin.ModelAdmin):
         return f"{obj.user.first_name} {obj.user.last_name}"
     user_full_name.short_description = 'Name'
 
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'profile_picture_tag')
+    readonly_fields = ('profile_picture_tag',)
+
 admin.site.register(NumuwUser, NumuwUserAdmin)
 admin.site.register(Therapist, TherapistAdmin)
 admin.site.register(Parent, ParentAdmin)
 admin.site.register(Patient, PatientAdmin)
 admin.site.register(Conversation)
 admin.site.register(Message)
+admin.site.register(UserProfile, UserProfileAdmin)

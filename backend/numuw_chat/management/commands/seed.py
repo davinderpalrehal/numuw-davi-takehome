@@ -1,6 +1,6 @@
 import random
 
-from accounts.models import Therapist, Patient, Parent, NumuwUser
+from accounts.models import Therapist, Patient, Parent, NumuwUser, UserProfile
 from django.contrib.auth import get_user_model
 from django.core.management import BaseCommand
 
@@ -25,6 +25,7 @@ class Command(BaseCommand):
             last_name='User',
             can_login=True
         )
+        UserProfile.objects.create(user=User.objects.get(username='admin'), profile_picture="profile_pictures/admin_picture.jpg")
 
         # Adding therapists
         therapist_users = []
@@ -46,6 +47,7 @@ class Command(BaseCommand):
             )
             curr_user.save()
             Therapist.objects.create(user=curr_user)
+            UserProfile.objects.create(user=curr_user, profile_picture=f'profile_pictures/{f_name.lower()}_{l_name.lower()}.jpg')
             therapist_users.append(curr_user)
 
         # Adding patients
@@ -74,6 +76,7 @@ class Command(BaseCommand):
             )
             curr_user.save()
             Patient.objects.create(user=curr_user)
+            UserProfile.objects.create(user=curr_user, profile_picture=f'profile_pictures/{f_name.lower()}_{l_name.lower()}.jpg')
             patient_users.append(curr_user)
 
         # Adding parents
@@ -100,6 +103,7 @@ class Command(BaseCommand):
             )
             curr_user.save()
             Parent.objects.create(user=curr_user)
+            UserProfile.objects.create(user=curr_user, profile_picture=f'profile_pictures/{f_name.lower()}_{l_name.lower()}.jpg')
             parent_users.append(curr_user)
 
         # Assign patients to parents

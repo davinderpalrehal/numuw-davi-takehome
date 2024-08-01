@@ -1,3 +1,4 @@
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers, status
@@ -5,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from accounts.models import NumuwUser
+from . import settings
 from .views import ConversationViewSet, MessageViewSet, ChatHistoryView
 from accounts.views import UserDetailView
 
@@ -38,4 +40,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/chat-history/', ChatHistoryView.as_view(), name='chat-history'),
     path('api/', include(router.urls)),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
