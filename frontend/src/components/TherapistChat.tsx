@@ -7,6 +7,8 @@ import { FaPaperPlane, FaPaperclip } from 'react-icons/fa';
 function TherapistChat() {
   const [patient, setPatient] = useState({});
   const [user, setUser] = useState({});
+  const [chatHistory, setChatHistory] = useState([]);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     setUser({
@@ -28,10 +30,42 @@ function TherapistChat() {
       user_type: 'patient',
       picture: 'image-url',
     });
+
+    setChatHistory([
+      {
+        sender: 1,
+        content: 'Hello, how are you?',
+      },
+      {
+        sender: 5,
+        content: 'I am good. How about you?',
+      },
+      {
+        sender: 1,
+        content: 'How is Daniel doing?',
+      },
+      {
+        sender: 5,
+        content: 'He is good. Coping well with the new medication',
+      },
+      {
+        sender: 1,
+        content: 'Could you send me a copy of the blood test reports',
+      },
+    ]);
   }, []);
 
   const [onlineStatus, setOnlineStatus] = useState('Online');
   const navigate = useNavigate();
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      // TODO: Send message to server
+      setChatHistory([...chatHistory, { sender: user.id, content: message }]);
+      setMessage('');
+    }
+  };
 
   return (
     <div className="flex gap-4 h-[75vh] h-min-[50vh]">
@@ -68,37 +102,31 @@ function TherapistChat() {
       <div className="flex flex-wrap flex-grow gap-4 flex-col">
         <div className="border-2 border-slate-300 rounded-3xl p-4 flex-grow h-[50vh]">
           <div className="p-4 overflow-auto h-[50vh]">
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
-            <p>this is the chat display</p>
+            {chatHistory.map((message, index) => (
+              <div key={index}>
+                {message.sender === user.id ? (
+                  <div className="flex justify-end">
+                    <div className="flex bg-blue-300 py-2 px-4 rounded-lg">
+                      {message.content}
+                      <img
+                        src={user.picture}
+                        className="w-10 h-10 rounded-full ml-2"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex justify-end flex-row-reverse">
+                    <div className="flex bg-white bg-green-300 py-2 px-4 rounded-lg">
+                      <img
+                        src={patient.picture}
+                        className="w-10 h-10 rounded-full mr-2"
+                      />
+                      {message.content}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -107,7 +135,10 @@ function TherapistChat() {
             name=""
             id=""
             rows="2"
-            className="flex-grow bg-slate-100"
+            className="flex-grow bg-slate-100 p-2"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
           ></textarea>
           <Button variant="outline">
             <FaPaperclip />
