@@ -1,5 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Api from "../../utilities/Api.ts";
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import Api from '../../utilities/Api.ts';
+import { jwtDecode } from 'jwt-decode';
 // import jwtDecode from "jwt-decode";
 // import Api from "../../utilities/Api.ts";
 
@@ -14,47 +15,55 @@ const initialState: UserState = {
 };
 
 export const loginUser = createAsyncThunk(
-  "user/login",
+  'user/login',
   async (
     { username, password }: { username: string; password: string },
     thunkAPI,
   ) => {
     try {
-      console.log("Thunk loginuser");
-      Api.post("api/token/", { username, password }).then((result) => {
-        console.log(result);
-      });
-      // const api = new Api(import.meta.env.VITE_BASE_URL);
+      console.log('Thunk loginuser');
+      const response = await Api.post('api/token/', { username, password });
+      console.log(response);
+      const token = response.access;
+      localStorage.setItem('token', token);
+      document.cookie = `token=${token};path=/;`;
+      thunkAPI.dispatch(setToken(token));
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
   },
 );
-/*
-  async (
-  ) => {
+
+export const fetchUserDetails = createAsyncThunk(
+  'user/fetchUserDetails',
+  async (_, thunkAPI) => {
     try {
-      const api = new Api(import.meta.env.VITE_BASE_URL);
-      const response = await api.post("api/token/", { username, password });
-      return response.data; // Ensure you return the response data
+      const response = await Api.get('api/user-details/', true);
+      console.log({
+        userDetails: response,
+      });
+      thunkAPI.dispatch(setUserDetails(response));
+      return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
   },
 );
-*/
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
-      state.user = jwtDecode(action.payload);
     },
     clearToken: (state) => {
       state.token = null;
       state.user = null;
+    },
+    setUserDetails: (state, action: PayloadAction<any>) => {
+      state.user = action.payload;
     },
   },
 });

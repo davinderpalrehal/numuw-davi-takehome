@@ -22,7 +22,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     permission_classes = [IsTherapistOrParent]
 
 
-class ChatHistoryView(APIView):
+class ChatHistoryView(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
