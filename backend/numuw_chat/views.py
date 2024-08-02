@@ -1,11 +1,13 @@
 from rest_framework import viewsets, status
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from accounts.models import NumuwUser, Therapist
 from .models import Conversation, Message
-from .serializers import ConversationSerializer, MessageSerializer
+from .serializers import ConversationSerializer, MessageSerializer, PatientSerializer
 from accounts.permissions import IsTherapistOrParent
 
 
@@ -45,3 +47,14 @@ class ChatHistoryView(viewsets.ReadOnlyModelViewSet):
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class TherapistPatientsView(RetrieveAPIView):
+    permission_classes = [IsTherapistOrParent]
+
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            therapist = Therapist.objects.get(id=request.user.id)
+            patients = therapist.patients.all()
+            serializer = PatientSerializer(patients, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Therapist.DoesNotExist:
+            return Response({'error': 'Therapist does not exist'}, status=status.HTTP_404_NOT_FOUND)

@@ -106,7 +106,7 @@ class Command(BaseCommand):
             UserProfile.objects.create(user=curr_user, profile_picture=f'profile_pictures/{f_name.lower()}_{l_name.lower()}.jpg')
             parent_users.append(curr_user)
 
-        # Assign patients to parents
+        # Assign patients to therapists
         num_therapists = len(therapist_users)
         for i, patient_user in enumerate(patient_users):
             therapist_user = therapist_users[i % num_therapists]
@@ -121,6 +121,14 @@ class Command(BaseCommand):
             patient = Patient.objects.get(user=patient_user)
             therapist.patients.add(patient)
             therapist.save()
+
+        # Assign patients to parents
+        for patient_user in patient_users:
+            parent_user = random.choice(parent_users)
+            parent = Parent.objects.get(user=parent_user)
+            patient = Patient.objects.get(user=patient_user)
+            parent.patients.add(patient)
+            parent.save()
 
         # Adding conversations and messages
         for parent in parent_users:
