@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import TherapistView from '../components/TherapistView.tsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserDetails, setToken } from '../state/user/userSlice.ts';
 
 function Dashboard() {
-  const [user, setUser] = useState({});
+  const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setUser({
-      id: 1,
-      username: 'johndoe',
-      first_name: 'John',
-      last_name: 'Doe',
-      email: 'johndoe@me.com',
-      user_type: 'therapist',
-      picture: 'image-url',
-    });
-  }, []);
+    const token = localStorage.getItem('token');
+    if (token && !user) {
+      dispatch(fetchUserDetails());
+      dispatch(setToken(token));
+    }
+  }, [dispatch]);
 
   return (
     <>
-      {user.user_type === 'therapist' ? (
-        <TherapistView user={user} />
+      {user && user.user_type === 'therapist' ? (
+        <TherapistView />
       ) : (
         'Patient view'
       )}

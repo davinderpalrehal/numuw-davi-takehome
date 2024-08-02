@@ -38,6 +38,11 @@ export const loginUser = createAsyncThunk(
 export const fetchUserDetails = createAsyncThunk(
   'user/fetchUserDetails',
   async (_, thunkAPI) => {
+    const state = thunkAPI.getState();
+    console.log({
+      state,
+    });
+    if (state.user.user) return state.user.user;
     try {
       const response = await Api.get('api/user-details/', true);
       console.log({
