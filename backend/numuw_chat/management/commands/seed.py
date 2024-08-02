@@ -95,8 +95,8 @@ class Command(BaseCommand):
             curr_user = NumuwUser.objects.create_user(
                 username=f'{f_name.lower()}{l_name.lower()}',
                 email=f'{f_name.lower()}{l_name.lower()}@localhost',
-                password='patient123',
-                user_type='patient',
+                password='parent123',
+                user_type='parent',
                 first_name=f_name,
                 last_name=l_name,
                 can_login=True,

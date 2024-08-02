@@ -5,6 +5,9 @@ import Home from './pages/Home.tsx';
 import ProfileMenu from './components/ProfileMenu.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import Chat from './pages/Chat.tsx';
+import { useDispatch } from 'react-redux';
+import { fetchUserDetails, setToken } from './state/user/userSlice.ts';
+import { useEffect } from 'react';
 
 function BaseLayout({ children }) {
   const { showLoginModal } = useLoginModal();
@@ -29,6 +32,16 @@ function BaseLayout({ children }) {
 }
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(fetchUserDetails());
+      dispatch(setToken(token));
+    }
+  }, [dispatch]);
+
   return (
     <LoginModalProvider>
       <BrowserRouter>

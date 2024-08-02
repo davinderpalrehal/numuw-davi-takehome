@@ -1,12 +1,20 @@
 import Typography from '../components/Typography.tsx';
 import Button from '../components/Button.tsx';
 import { useLoginModal } from '../LoginModalContext.tsx';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
+  const user = useSelector((state) => state.user.user);
   const { openLoginModal } = useLoginModal();
+  const navigate = useNavigate();
 
   const handleLogin = () => {
     openLoginModal();
+  };
+
+  const navigateToDashboard = () => {
+    navigate('/dashboard');
   };
 
   return (
@@ -22,9 +30,15 @@ function Home() {
         <Typography variant="body">
           Explore how our unique approach can support your family
         </Typography>
-        <Button className="mt-5" onClick={handleLogin}>
-          Login to get started
-        </Button>
+        {user ? (
+          <Button className="mt-5" onClick={navigateToDashboard}>
+            Go to Dashboard
+          </Button>
+        ) : (
+          <Button className="mt-5" onClick={handleLogin}>
+            Login to get started
+          </Button>
+        )}
       </div>
       <div className="bg-green-100"></div>
     </div>
