@@ -66,7 +66,12 @@ function Typography({
         break;
       case 'label':
       case 'buttonText':
-        classesToBeApplied.push('text-sm', 'font-medium', 'leading-snug');
+        classesToBeApplied.push(
+          'text-sm',
+          'font-medium',
+          'leading-snug',
+          'text-center',
+        );
         if (variant === 'buttonText') {
           classesToBeApplied.push('uppercase');
         }

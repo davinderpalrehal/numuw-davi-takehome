@@ -22,7 +22,7 @@ class NumuwUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = NumuwUser
-        fields = ['id', 'first_name', 'last_name', 'profile_picture']
+        fields = ['id', 'first_name', 'last_name', 'profile_picture', 'email']
 
     def get_profile_picture(self, obj):
         try:

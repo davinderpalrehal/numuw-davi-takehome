@@ -4,6 +4,7 @@ import Button from './Button.tsx';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPatients } from '../state/patient/patientSlice.ts';
+import { FaEnvelope, FaComments } from 'react-icons/fa6';
 
 function TherapistView() {
   const [onlineStatus, setOnlineStatus] = useState('Online');
@@ -15,6 +16,15 @@ function TherapistView() {
   useEffect(() => {
     dispatch(fetchPatients());
   }, [dispatch]);
+
+  const sendEmail = (email) => {
+    alert('Sending email to ' + email);
+  };
+
+  const openChat = (parent) => {
+    dispatch(activeParent(parent));
+    navigate(`/chat/${user.id}/${parent.id}`);
+  };
 
   return (
     <div className="flex gap-4">
@@ -36,32 +46,61 @@ function TherapistView() {
           {onlineStatus}
         </Typography>
       </div>
-      <div className="flex flex-wrap w-3/4 gap-4">
+      <div className="w-3/4">
         {patients.map((patient) => (
           <div
-            className="bg-white rounded-lg shadow-md p-4 grid grid-cols-4 gap-4 min-w-[240px] max-w-80"
+            className="grid grid-cols-10 border-2 border-slate-300 rounded-3xl p-4 mb-4 gap-4"
             key={patient.user.id}
           >
-            <img
-              src={import.meta.env.VITE_API_URL + patient.user.profile_picture}
-              alt={
-                patient.user.first_name +
-                ' ' +
-                patient.user.last_name +
-                ' picture'
-              }
-              className="rounded-full w-16 h-16 border-2 border-gray-200 mb-2 row-span-3"
-            />
-            <Typography variant="subtitle" className="col-span-3">
-              {patient.user.first_name} {patient.user.last_name}
-            </Typography>
-            <Typography className="col-span-3">{patient.user.email}</Typography>
-            <Button
-              onClick={() => navigate(`/chat/${user.id}/${patient.user.id}`)}
-              className="col-span-3"
-            >
-              Chat with Parent
-            </Button>
+            <div className="col-span-3">
+              <img
+                src={
+                  import.meta.env.VITE_API_URL + patient.user.profile_picture
+                }
+                alt={
+                  patient.user.first_name +
+                  ' ' +
+                  patient.user.last_name +
+                  ' image'
+                }
+                className="w-16 h-16 rounded-full"
+              />
+              <Typography>
+                {patient.user.first_name} {patient.user.last_name}
+              </Typography>
+            </div>
+            <div className="col-span-3">
+              <img
+                src={
+                  import.meta.env.VITE_API_URL +
+                  patient.parents[0].user.profile_picture
+                }
+                alt={
+                  patient.parents[0].user.first_name +
+                  ' ' +
+                  patient.parents[0].user.last_name +
+                  ' image'
+                }
+                className="w-16 h-16 rounded-full"
+              />
+              {patient.parents[0].user.first_name}{' '}
+              {patient.parents[0].user.last_name}
+            </div>
+            <div className="col-span-2">Notes</div>
+            <div className="flex flex-col gap-4 col-span-2">
+              <Button
+                variant="outline"
+                onClick={() => sendEmail(patient.parents[0].user.email)}
+              >
+                <FaEnvelope className="m-auto" />
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => openChat(patient.parents[0].user)}
+              >
+                <FaComments className="m-auto" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
