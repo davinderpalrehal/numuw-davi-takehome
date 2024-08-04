@@ -22,7 +22,8 @@ class Conversation(models.Model):
             ('open', 'Open'),
             ('closed', 'Closed'),
             ('pending', 'Pending')
-        ]
+        ],
+        default='pending'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
