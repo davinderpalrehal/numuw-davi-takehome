@@ -134,8 +134,8 @@ class Command(BaseCommand):
         for parent in parent_users:
             therapist = random.choice(therapist_users)
             conversation = Conversation.objects.create(
-                therapist=therapist,
-                parent=parent,
+                therapist=NumuwUser.objects.get(id=therapist.id),
+                parent=NumuwUser.objects.get(id=parent.id),
                 status='open'
             )
             messages = [

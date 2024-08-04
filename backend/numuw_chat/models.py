@@ -1,16 +1,18 @@
 from django.contrib.auth.models import User
 from django.db import models
+
+from accounts.models import Therapist, Parent, NumuwUser
 from numuw_chat import settings
 
 
 class Conversation(models.Model):
     therapist = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        NumuwUser,
         related_name='therapist_conversations',
         on_delete=models.CASCADE
     )
     parent = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        NumuwUser,
         related_name='parent_conversations',
         on_delete=models.CASCADE
     )
@@ -21,6 +23,11 @@ class Conversation(models.Model):
             ('closed', 'Closed'),
         ]
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'Conversation between {self.therapist.username} and {self.parent.username}'
 
 
 class Message(models.Model):
@@ -30,7 +37,8 @@ class Message(models.Model):
         on_delete=models.CASCADE
     )
     sender = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        NumuwUser,
+        related_name='messages',
         on_delete=models.CASCADE
     )
     content = models.TextField()
