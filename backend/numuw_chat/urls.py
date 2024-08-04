@@ -12,7 +12,7 @@ from .views import (
     MessageViewSet,
     ChatHistoryView,
     TherapistPatientsView, StartConversationView, RequestConversationView, ConversationListView, SendNotificationView,
-    UpdateConversationStateView,
+    UpdateConversationStateView, UploadMediaView,
 )
 from accounts.views import UserDetailView
 
@@ -56,5 +56,6 @@ urlpatterns = [
     path('api/conversations/', ConversationListView.as_view(), name='conversation-list'),
     path('api/conversations/<int:pk>/update-state', UpdateConversationStateView.as_view(), name='update-conversation-state'),
     path('api/send-notification/', SendNotificationView.as_view(), name='send-notification'),
+    path('api/upload-media/', UploadMediaView.as_view(), name='upload-media'),
     path("api/", include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

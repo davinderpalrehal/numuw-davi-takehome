@@ -6,23 +6,26 @@ from numuw_chat import settings
 
 
 class Conversation(models.Model):
+    STATUS_CHOICES = [
+        ('open', 'Open'),
+        ('closed', 'Closed'),
+        ('pending', 'Pending')
+    ]
     therapist = models.ForeignKey(
         NumuwUser,
         related_name='therapist_conversations',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        limit_choices_to={'user_type': 'therapist'}
     )
     parent = models.ForeignKey(
         NumuwUser,
         related_name='parent_conversations',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        limit_choices_to={'user_type': 'parent'}
     )
     status = models.CharField(
         max_length=10,
-        choices=[
-            ('open', 'Open'),
-            ('closed', 'Closed'),
-            ('pending', 'Pending')
-        ],
+        choices=STATUS_CHOICES,
         default='pending'
     )
     created_at = models.DateTimeField(auto_now_add=True)

@@ -2,6 +2,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from rest_framework import viewsets, status, generics
 from rest_framework.generics import RetrieveAPIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -201,3 +202,21 @@ class UpdateConversationStateView(generics.UpdateAPIView):
         if request.user.user_type != 'therapist':
             return Response({"error": "Only therapists can update conversation state"}, status=status.HTTP_403_FORBIDDEN)
         return super().update(request, *args, **kwargs)
+
+
+class UploadMediaView(generics.CreateAPIView):
+    serializer_class = MessageSerializer
+    permission_classes = [IsTherapistOrParent]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, *args, **kwargs):
+        conversation_id = request.data.get('conversation_id')
+        conversation = Conversation.objects.filter(id=conversation_id, status='open').first()
+
+        if not conversation:
+            return Response({'error': 'Conversation must be in an open state to upload media'}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.data['sender'] = request.user.id
+        request.data['conversation'] = conversation.id
+
+        return self.create(request, *args, **kwargs)
