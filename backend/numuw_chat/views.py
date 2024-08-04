@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -133,3 +133,32 @@ class RequestConversationView(APIView):
                 {"success": "Conversation request sent"}, status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ConversationListView(generics.ListAPIView):
+    serializer_class = ConversationSerializer
+    permission_classes = [IsTherapistOrParent]
+
+    def get_queryset(self):
+        user = self.request.user
+        other_user_id = self.request.query_params.get('user_id', None)
+
+        if other_user_id:
+            try:
+                other_user = NumuwUser.objects.get(id=other_user_id)
+            except NumuwUser.DoesNotExist:
+                return Conversation.objects.none()
+
+            if user.user_type == "therapist":
+                return Conversation.objects.filter(therapist=user, parent=other_user)
+            elif user.user_type == "parent":
+                return Conversation.objects.filter(parent=user, therapist=other_user)
+            else:
+                return Conversation.objects.none()
+        else:
+            if user.user_type == 'therapist':
+                return Conversation.objects.filter(therapist=user)
+            elif user.user_type == 'parent':
+                return Conversation.objects.filter(parent=user)
+            else:
+                return Conversation.objects.none()
