@@ -1,0 +1,14 @@
+# curl -X PATCH http://localhost:8000/conversations/1/update-state/
+#    -H "Authorization: Bearer <your_token>"
+#    -H "Content-Type: application/json"
+#    -d '{"status": "closed"}'
+PATCH http://localhost:8000/conversations/1/update-state/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIyNzE2NDc1LCJpYXQiOjE3MjI2MzAwNzUsImp0aSI6ImZlMDdkZGI2ZmFlZjQwNGU4ZjBjZDdhM2I2ZDY4Y2FlIiwidXNlcl9pZCI6MX0.5UUFjrIsCSKrgWMXeZYZyoY44lwzMKHd9zcliROo39c
+Content-Type: application/json
+
+{
+  "status": "closed"
+}
+
+###
+

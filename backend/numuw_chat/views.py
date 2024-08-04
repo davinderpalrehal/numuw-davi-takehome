@@ -183,3 +183,21 @@ class SendNotificationView(APIView):
         )
 
         return JsonResponse({'status': 'Notification sent'})
+
+
+class UpdateConversationStateView(generics.UpdateAPIView):
+    serializer_class = ConversationSerializer
+    permission_classes = [IsTherapistOrParent]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.user_type == 'therapist':
+            return Conversation.objects.filter(therapist=user)
+        else:
+            return Conversation.objects.none()
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user.user_type != 'therapist':
+            return Response({"error": "Only therapists can update conversation state"}, status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
