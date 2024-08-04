@@ -1,3 +1,5 @@
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from rest_framework import viewsets, status, generics
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -162,3 +164,22 @@ class ConversationListView(generics.ListAPIView):
                 return Conversation.objects.filter(parent=user)
             else:
                 return Conversation.objects.none()
+
+
+class SendNotificationView(APIView):
+    def post(self, request):
+        therapist_id = request.POST.get('therapist_id')
+        message = request.POST.get('message')
+
+        channel_layer = get_channel_layer()
+        group_name = f"chat_{therapist_id}"
+
+        async_to_sync(channel_layer.group_sent)(
+            group_name,
+            {
+                'type': 'chat_message',
+                'message': message
+            }
+        )
+
+        return JsonResponse({'status': 'Notification sent'})

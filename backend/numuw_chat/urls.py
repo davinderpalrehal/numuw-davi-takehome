@@ -11,7 +11,7 @@ from .views import (
     ConversationViewSet,
     MessageViewSet,
     ChatHistoryView,
-    TherapistPatientsView, StartConversationView, RequestConversationView, ConversationListView,
+    TherapistPatientsView, StartConversationView, RequestConversationView, ConversationListView, SendNotificationView,
 )
 from accounts.views import UserDetailView
 
@@ -53,5 +53,6 @@ urlpatterns = [
     path('api/start-conversation/', StartConversationView.as_view(), name='start-conversation'),
     path('api/request-conversation/', RequestConversationView.as_view(), name='request-conversation'),
     path('api/conversations/', ConversationListView.as_view(), name='conversation-list'),
+    path('api/send-notification/', SendNotificationView.as_view(), name='send-notification'),
     path("api/", include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
