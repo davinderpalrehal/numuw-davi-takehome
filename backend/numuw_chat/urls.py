@@ -11,7 +11,7 @@ from .views import (
     ConversationViewSet,
     MessageViewSet,
     ChatHistoryView,
-    TherapistPatientsView, StartConversationView,
+    TherapistPatientsView, StartConversationView, RequestConversationView,
 )
 from accounts.views import UserDetailView
 
@@ -51,5 +51,6 @@ urlpatterns = [
     ),
     path("api/fetch-patients/", TherapistPatientsView.as_view(), name="fetch-patients"),
     path('api/start-conversation/', StartConversationView.as_view(), name='start-conversation'),
+    path('api/request-conversation/', RequestConversationView.as_view(), name='request-conversation'),
     path("api/", include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -5,10 +5,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from accounts.models import NumuwUser, Therapist
+from accounts.models import NumuwUser, Therapist, Parent
 from accounts.serializers import PatientSerializer
 from .models import Conversation, Message
-from .serializers import ConversationSerializer, MessageSerializer
+from .serializers import (
+    ConversationSerializer,
+    MessageSerializer,
+    ConversationRequestSerializer,
+)
 from accounts.permissions import IsTherapistOrParent
 
 
@@ -85,3 +89,47 @@ class StartConversationView(APIView):
         if created:
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RequestConversationView(APIView):
+    permission_classes = [IsTherapistOrParent]
+
+    def post(self, request):
+        serializer = ConversationRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            therapist = serializer.validated_data["therapist_id"]
+            message_content = serializer.validated_data["message"]
+            parent = request.user
+
+            if parent.user_type != "parent":
+                return Response(
+                    {"error": "Only parents can request conversations with therapists"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+            parent_instance = Parent.objects.get(user=parent)
+            therapist_instance = Therapist.objects.get(user=therapist)
+            related_patients = parent_instance.patients.filter(
+                therapists=therapist_instance
+            )
+
+            if not related_patients.exists():
+                return Response(
+                    {"error": "Your child is not associated with this therapist"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+            conversation = Conversation.objects.create(
+                therapist=therapist,
+                parent=parent,
+                status="pending",
+            )
+
+            Message.objects.create(
+                conversation=conversation, sender=parent, content=message_content
+            )
+
+            return Response(
+                {"success": "Conversation request sent"}, status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

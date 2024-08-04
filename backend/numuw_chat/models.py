@@ -21,6 +21,7 @@ class Conversation(models.Model):
         choices=[
             ('open', 'Open'),
             ('closed', 'Closed'),
+            ('pending', 'Pending')
         ]
     )
     created_at = models.DateTimeField(auto_now_add=True)

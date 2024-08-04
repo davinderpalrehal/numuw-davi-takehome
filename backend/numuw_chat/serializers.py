@@ -15,3 +15,8 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = '__all__'
+
+
+class ConversationRequestSerializer(serializers.Serializer):
+    therapist_id = serializers.PrimaryKeyRelatedField(queryset=NumuwUser.objects.filter(user_type='therapist'))
+    message = serializers.CharField(max_length=500)
