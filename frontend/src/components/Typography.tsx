@@ -1,37 +1,38 @@
 import { useMemo } from 'react';
+import { TypographyProps, TypographyVariant } from '../types';
 
-function Typography({
-  variant = '',
+const Typography: React.FC<TypographyProps> = ({
+  variant = TypographyVariant.Body,
   component = '',
   className = '',
   children,
-}) {
+}) => {
   const Tag = useMemo(() => {
     let tagToSet = 'div';
     switch (variant) {
-      case 'displayLarge':
+      case TypographyVariant.DisplayLarge:
         tagToSet = 'h1';
         break;
-      case 'displayMedium':
+      case TypographyVariant.DisplayMedium:
         tagToSet = 'h2';
         break;
-      case 'displaySmall':
+      case TypographyVariant.DisplaySmall:
         tagToSet = 'h3';
         break;
-      case 'headline':
+      case TypographyVariant.Headline:
         tagToSet = 'h4';
         break;
-      case 'title':
+      case TypographyVariant.Title:
         tagToSet = 'h5';
         break;
-      case 'subtitle':
+      case TypographyVariant.Subtitle:
         tagToSet = 'h6';
         break;
-      case 'body':
+      case TypographyVariant.Body:
         tagToSet = 'p';
         break;
-      case 'label':
-      case 'buttonText':
+      case TypographyVariant.Label:
+      case TypographyVariant.ButtonText:
         tagToSet = 'span';
         break;
       default:
@@ -43,36 +44,36 @@ function Typography({
   const classes = useMemo(() => {
     const classesToBeApplied = [];
     switch (variant) {
-      case 'displayLarge':
+      case TypographyVariant.DisplayLarge:
         classesToBeApplied.push('text-8xl', 'font-bold', 'leading-tight');
         break;
-      case 'displayMedium':
+      case TypographyVariant.DisplayMedium:
         classesToBeApplied.push('text-7xl', 'font-bold', 'leading-tight');
         break;
-      case 'displaySmall':
+      case TypographyVariant.DisplaySmall:
         classesToBeApplied.push('text-6xl', 'font-bold', 'leading-tight');
         break;
-      case 'headline':
+      case TypographyVariant.Headline:
         classesToBeApplied.push('text-5xl', 'font-bold', 'leading-tight');
         break;
-      case 'title':
+      case TypographyVariant.Title:
         classesToBeApplied.push('text-4xl', 'font-bold', 'leading-relaxed');
         break;
-      case 'subtitle':
+      case TypographyVariant.Subtitle:
         classesToBeApplied.push('text-3xl', 'leading-relaxed');
         break;
-      case 'body':
+      case TypographyVariant.Body:
         classesToBeApplied.push('text-base', 'font-normal', 'leading-relaxed');
         break;
-      case 'label':
-      case 'buttonText':
+      case TypographyVariant.Label:
+      case TypographyVariant.ButtonText:
         classesToBeApplied.push(
           'text-sm',
           'font-medium',
           'leading-snug',
           'text-center',
         );
-        if (variant === 'buttonText') {
+        if (variant === TypographyVariant.ButtonText) {
           classesToBeApplied.push('uppercase');
         }
         break;
@@ -84,6 +85,6 @@ function Typography({
   }, [variant, className]);
 
   return <Tag className={classes}>{children}</Tag>;
-}
+};
 
 export default Typography;

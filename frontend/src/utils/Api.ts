@@ -1,13 +1,21 @@
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+interface RequestOptions extends RequestInit {
+  header: Record<string, string>;
+}
+
 const Api = {
-  get: async (endpoint: string, requireAuth = false) => {
-    const BASE_URL = import.meta.env.VITE_API_URL;
+  get: async (endpoint: string, requireAuth = false): Promise<any> => {
     const url = `${BASE_URL}/${endpoint}`;
     const requestOptions = getRequestOptions(requireAuth, 'GET');
     const response = await fetch(url, requestOptions);
     return await response.json();
   },
-  post: async (endpoint: string, data: any, requireAuth = false) => {
-    const BASE_URL = import.meta.env.VITE_API_URL;
+  post: async (
+    endpoint: string,
+    data: any,
+    requireAuth = false,
+  ): Promise<any> => {
     const url = `${BASE_URL}/${endpoint}`;
     const requestOptions = getRequestOptions(requireAuth, 'POST', data);
     const response = await fetch(url, requestOptions);
@@ -19,7 +27,7 @@ function getRequestOptions(
   authRequired: boolean,
   method = 'GET',
   body?: any,
-): RequestInit {
+): RequestOptions {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };

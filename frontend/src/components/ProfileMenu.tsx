@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext.tsx';
+import { useLoginModal } from '../contexts/LoginModalContext.tsx';
 import Button from './Button.tsx';
-import { useLoginModal } from '../LoginModalContext.tsx';
-import { useDispatch, useSelector } from 'react-redux';
 import Typography from './Typography.tsx';
 
-function ProfileMenu() {
-  const user = useSelector((state) => state.user.user);
-  const dispatch = useDispatch();
-  const { openLoginModal } = useLoginModal();
+const ProfileMenu: React.FC = () => {
+  const { user } = useAuth();
+  const { setLoginModalOpen } = useLoginModal();
 
   const handleLogin = () => {
-    openLoginModal();
+    setLoginModalOpen(true);
   };
 
   return user ? (
@@ -19,14 +17,14 @@ function ProfileMenu() {
         {user.first_name} {user.last_name}
       </Typography>
       <img
-        src={`${import.meta.env.VITE_API_URL}${user.profile_picture}`}
-        alt=""
+        src={import.meta.env.VITE_API_URL + user.profile_picture}
+        alt={`${user.first_name} ${user.last_name}'s profile picture`}
         className="rounded-full w-10 h-10"
       />
     </div>
   ) : (
-    <Button onClick={handleLogin}>Log in {JSON.stringify(user)}</Button>
+    <Button onClick={handleLogin}>Log in</Button>
   );
-}
+};
 
 export default ProfileMenu;

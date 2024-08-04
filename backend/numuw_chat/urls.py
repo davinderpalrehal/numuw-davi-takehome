@@ -1,13 +1,18 @@
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework import routers, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from accounts.models import NumuwUser
 from . import settings
-from .views import ConversationViewSet, MessageViewSet, ChatHistoryView, TherapistPatientsView
+from .views import (
+    ConversationViewSet,
+    MessageViewSet,
+    ChatHistoryView,
+    TherapistPatientsView,
+)
 from accounts.views import UserDetailView
 
 
@@ -39,7 +44,11 @@ urlpatterns = [
     path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("admin/", admin.site.urls),
-    path("api/user-details/", UserDetailView.as_view(), name="user-details"),
-    path('api/fetch-patients/', TherapistPatientsView.as_view(), name='fetch-patients'),
+    re_path(
+        r"^api/user-details/(?P<user_id>\d+)?$",
+        UserDetailView.as_view(),
+        name="user-details",
+    ),
+    path("api/fetch-patients/", TherapistPatientsView.as_view(), name="fetch-patients"),
     path("api/", include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

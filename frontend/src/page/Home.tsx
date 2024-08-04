@@ -1,16 +1,16 @@
-import Typography from '../components/Typography.tsx';
-import Button from '../components/Button.tsx';
-import { useLoginModal } from '../LoginModalContext.tsx';
-import { useSelector } from 'react-redux';
+import { useAuth } from '../contexts/AuthContext.tsx';
+import { useLoginModal } from '../contexts/LoginModalContext.tsx';
 import { useNavigate } from 'react-router-dom';
+import Button from '../components/Button.tsx';
+import Typography from '../components/Typography.tsx';
 
-function Home() {
-  const user = useSelector((state) => state.user.user);
-  const { openLoginModal } = useLoginModal();
+const Home: React.FC = () => {
+  const { user } = useAuth();
+  const { setLoginModalOpen } = useLoginModal();
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    openLoginModal();
+    setLoginModalOpen(true);
   };
 
   const navigateToDashboard = () => {
@@ -23,13 +23,16 @@ function Home() {
         <Typography variant="displayMedium">
           Supporting Children Empowering Families
         </Typography>
+
         <Typography variant="subtitle">
           Welcome to Numuw, a specialized platform dedicated to your child's
-          development and behavioral health
+          development and behavioural health
         </Typography>
+
         <Typography variant="body">
-          Explore how our unique approach can support your family
+          Explore how our unique approach can support your family.
         </Typography>
+
         {user ? (
           <Button className="mt-5" onClick={navigateToDashboard}>
             Go to Dashboard
@@ -40,9 +43,10 @@ function Home() {
           </Button>
         )}
       </div>
-      <div className="bg-green-100"></div>
+
+      <div className="bg-green-100">Side bar content here</div>
     </div>
   );
-}
+};
 
 export default Home;

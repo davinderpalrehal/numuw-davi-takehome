@@ -1,28 +1,30 @@
 import { useEffect, useState } from 'react';
-import Typography from './Typography.tsx';
-import Button from './Button.tsx';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchPatients } from '../state/patient/patientSlice.ts';
-import { FaEnvelope, FaComments } from 'react-icons/fa6';
+import { useAuth } from '../contexts/AuthContext';
+import Typography from '../components/Typography';
+import Button from '../components/Button';
+import { FaComments, FaEnvelope } from 'react-icons/fa';
 
-function TherapistView() {
+const TherapistDashboard: React.FC = () => {
   const [onlineStatus, setOnlineStatus] = useState('Online');
+  const [patients, setPatients] = useState([]);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);
-  const patients = useSelector((state) => state.patient.patients);
+  const { user } = useAuth();
 
   useEffect(() => {
-    dispatch(fetchPatients());
-  }, [dispatch]);
+    const fetchData = async () => {
+      const patientsData = await fetchPatients();
+      setPatients(patientsData);
+    };
 
-  const sendEmail = (email) => {
+    fetchData();
+  }, []);
+
+  const sendEmail = (email: string) => {
     alert('Sending email to ' + email);
   };
 
-  const openChat = (parent) => {
-    dispatch(activeParent(parent));
+  const openChat = (parent: any) => {
     navigate(`/chat/${user.id}/${parent.id}`);
   };
 
@@ -47,7 +49,7 @@ function TherapistView() {
         </Typography>
       </div>
       <div className="w-3/4">
-        {patients.map((patient) => (
+        {patients.map((patient: any) => (
           <div
             className="grid grid-cols-10 border-2 border-slate-300 rounded-3xl p-4 mb-4 gap-4"
             key={patient.user.id}
@@ -106,6 +108,6 @@ function TherapistView() {
       </div>
     </div>
   );
-}
+};
 
-export default TherapistView;
+export default TherapistDashboard;
