@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import Typography from './Typography.tsx';
 import Button from './Button.tsx';
 import { LoginModalProps } from '../types';
+import { useAuth } from '../contexts/AuthContext.tsx';
 
 const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
   const { setLoginModalOpen } = useLoginModal();
-  const { token, setToken, setUser } = useAuth();
+  const { token, setToken, setUser, login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -16,22 +17,23 @@ const LoginModal: React.FC<LoginModalProps> = ({ onClose }) => {
   };
 
   const handleLogin = async () => {
-    const resultAction = await loginUser({ username, password });
+    const resultAction = await login(username, password);
     if (resultAction) {
       console.log('login successful');
-      setToken(resultAction);
+      // setToken(resultAction);
       // TODO: recheck this
-      setUser(resultAction);
+      // setUser(resultAction);
       handleClose();
     } else {
-      alert('Login seems to have failed');
+      // alert('Login seems to have failed');
       console.log('Login failed', resultAction);
     }
   };
 
   useEffect(() => {
     if (token) {
-      fetchUserDetails();
+      // TODO: recheck this
+      // fetchUserDetails();
     }
   }, [token]);
 

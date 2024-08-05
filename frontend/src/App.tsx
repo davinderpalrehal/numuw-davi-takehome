@@ -12,9 +12,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async (token: string) => {
-      const user = await fetchUserDetails(token);
-      setToken(token);
-      setUser(user);
+      // TODO: Check this out
+      // const user = await fetchUserDetails(token);
+      // setToken(token);
+      // setUser(user);
     };
 
     const token = localStorage.getItem('token');

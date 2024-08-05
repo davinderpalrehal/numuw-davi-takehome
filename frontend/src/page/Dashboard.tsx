@@ -8,9 +8,10 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async (token: string) => {
-      const userDetails = await fetchUserDetails(token);
-      setToken(token);
-      setUser(userDetails);
+      // TODO: Check this out
+      // const userDetails = await fetchUserDetails(token);
+      // setToken(token);
+      // setUser(userDetails);
     };
 
     const token = localStorage.getItem('token');

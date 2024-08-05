@@ -20,6 +20,7 @@ from accounts.views import UserDetailView
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         username = request.data.get("username")
+        password = request.data.get("password")
 
         try:
             user = NumuwUser.objects.get(username=username)
@@ -42,7 +43,7 @@ router.register(r"messages", MessageViewSet)
 router.register(r"chat-history", ChatHistoryView, basename="chat-history")
 
 urlpatterns = [
-    path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/auth/login/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("admin/", admin.site.urls),
     re_path(
