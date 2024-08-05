@@ -1,0 +1,11 @@
+###
+GET /api/user-details/ HTTP/1.1
+HOST: localhost:8000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIyNzA2MzE4LCJpYXQiOjE3MjI2MTk5MTgsImp0aSI6Ijc1YmEyMDYzM2IxOTQwZmM5ZmEzOTE4YmJkYzc0MzEzIiwidXNlcl9pZCI6MX0.9OQviU4u6ZjJsrtunzC45mqUFaQV_MgFq9EqYBUoxAY
+
+###
+GET /api/user-details/10 HTTP/1.1
+HOST: localhost:8000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIyNzA2MzE4LCJpYXQiOjE3MjI2MTk5MTgsImp0aSI6Ijc1YmEyMDYzM2IxOTQwZmM5ZmEzOTE4YmJkYzc0MzEzIiwidXNlcl9pZCI6MX0.9OQviU4u6ZjJsrtunzC45mqUFaQV_MgFq9EqYBUoxAY
+
+###

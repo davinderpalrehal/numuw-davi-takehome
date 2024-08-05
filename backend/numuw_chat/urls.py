@@ -1,22 +1,62 @@
-"""
-URL configuration for numuw_chat project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
+from rest_framework import routers, status
+from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from accounts.models import NumuwUser
+from . import settings
+from .views import (
+    ConversationViewSet,
+    MessageViewSet,
+    ChatHistoryView,
+    TherapistPatientsView, StartConversationView, RequestConversationView, ConversationListView, SendNotificationView,
+    UpdateConversationStateView, UploadMediaView,
+)
+from accounts.views import UserDetailView
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        try:
+            user = NumuwUser.objects.get(username=username)
+            if not user.can_login:
+                return Response(
+                    {"error": "User is not allowed to login"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+        except NumuwUser.DoesNotExist:
+            return Response(
+                {"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        return super().post(request, *args, **kwargs)
+
+
+router = routers.DefaultRouter()
+router.register(r"conversations", ConversationViewSet)
+router.register(r"messages", MessageViewSet)
+router.register(r"chat-history", ChatHistoryView, basename="chat-history")
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-]
+    path("api/auth/login/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("admin/", admin.site.urls),
+    re_path(
+        r"^api/user-details/(?P<user_id>\d+)?$",
+        UserDetailView.as_view(),
+        name="user-details",
+    ),
+    path("api/fetch-patients/", TherapistPatientsView.as_view(), name="fetch-patients"),
+    path('api/start-conversation/', StartConversationView.as_view(), name='start-conversation'),
+    path('api/request-conversation/', RequestConversationView.as_view(), name='request-conversation'),
+    path('api/conversations/', ConversationListView.as_view(), name='conversation-list'),
+    path('api/conversations/<int:pk>/update-state', UpdateConversationStateView.as_view(), name='update-conversation-state'),
+    path('api/send-notification/', SendNotificationView.as_view(), name='send-notification'),
+    path('api/upload-media/', UploadMediaView.as_view(), name='upload-media'),
+    path("api/", include(router.urls)),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
